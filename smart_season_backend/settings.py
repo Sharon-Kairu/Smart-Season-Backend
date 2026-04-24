@@ -15,7 +15,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # =========================
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = 'False'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # =========================
 # DATABASE - MySQL
@@ -74,6 +76,18 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
 
 REST_FRAMEWORK = {
@@ -152,16 +166,16 @@ STATIC_URL = 'static/'
 # =========================
 # COOKIE SETTINGS (JWT)
 # =========================
-SECURE_COOKIE = False  # set True in production (HTTPS)
+SECURE_COOKIE = os.getenv('SECURE_COOKIE', 'False').lower() == 'true'
 
 ACCESS_TOKEN_COOKIE_NAME = "access_token"
 ACCESS_TOKEN_COOKIE_AGE = 60 * 60 * 4
 ACCESS_TOKEN_COOKIE_HTTPONLY = True
-ACCESS_TOKEN_COOKIE_SAMESITE = 'Lax'
+ACCESS_TOKEN_COOKIE_SAMESITE = 'None' if SECURE_COOKIE else 'Lax'
 ACCESS_TOKEN_COOKIE_SECURE = SECURE_COOKIE
 
 REFRESH_TOKEN_COOKIE_NAME = "refresh_token"
 REFRESH_TOKEN_COOKIE_AGE = 60 * 60 * 24 * 7
 REFRESH_TOKEN_COOKIE_HTTPONLY = True
-REFRESH_TOKEN_COOKIE_SAMESITE = 'Lax'
+REFRESH_TOKEN_COOKIE_SAMESITE = 'None' if SECURE_COOKIE else 'Lax'
 REFRESH_TOKEN_COOKIE_SECURE = SECURE_COOKIE
