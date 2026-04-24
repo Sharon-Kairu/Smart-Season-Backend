@@ -56,6 +56,7 @@ class LoginView(APIView):
         response.set_cookie(
         key=settings.ACCESS_TOKEN_COOKIE_NAME,
         value=access_token,
+        path='/',
         httponly=settings.ACCESS_TOKEN_COOKIE_HTTPONLY,
         secure=settings.ACCESS_TOKEN_COOKIE_SECURE,
         samesite=settings.ACCESS_TOKEN_COOKIE_SAMESITE,
@@ -67,6 +68,7 @@ class LoginView(APIView):
         response.set_cookie(
         key=settings.REFRESH_TOKEN_COOKIE_NAME,
         value=refresh_token,
+        path='/',
         httponly=settings.REFRESH_TOKEN_COOKIE_HTTPONLY,
         secure=settings.REFRESH_TOKEN_COOKIE_SECURE,
         samesite=settings.REFRESH_TOKEN_COOKIE_SAMESITE,
@@ -76,6 +78,7 @@ class LoginView(APIView):
         response.set_cookie(
         key="user_role",
         value=user.role,
+        path='/',
         httponly=False,
         secure=settings.ACCESS_TOKEN_COOKIE_SECURE,
         samesite=settings.ACCESS_TOKEN_COOKIE_SAMESITE,
@@ -103,6 +106,7 @@ class RefreshTokenView(APIView):
         response.set_cookie(
         key=settings.ACCESS_TOKEN_COOKIE_NAME,
         value=new_access_token,
+        path='/',
         httponly=settings.ACCESS_TOKEN_COOKIE_HTTPONLY,
         secure=settings.ACCESS_TOKEN_COOKIE_SECURE,
         samesite=settings.ACCESS_TOKEN_COOKIE_SAMESITE,
