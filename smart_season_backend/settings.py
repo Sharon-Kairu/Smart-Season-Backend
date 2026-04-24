@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # =========================
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = 'False'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # =========================
 # DATABASE - MySQL
@@ -81,9 +81,7 @@ MIDDLEWARE = [
 # =========================
 # CORS
 # =========================
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
 CORS_ALLOW_CREDENTIALS = True
 
 # =========================
