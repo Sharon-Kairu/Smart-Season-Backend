@@ -4,9 +4,32 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
-from .serializer import LoginSerializer
+from .serializers import LoginSerializer,RegisterSerializer
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
+
+class RegisterView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if request.user.role not in ['admin', 'superadmin']:
+            return Response(
+                {"detail": "Only admins can register new agents."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "Agent registered successfully"},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class LoginView(APIView):
+
     permission_classes = [] 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
@@ -30,7 +53,6 @@ class LoginView(APIView):
             status=status.HTTP_200_OK,
         )
 
-        # Set the access token cookie
         response.set_cookie(
         key=settings.ACCESS_TOKEN_COOKIE_NAME,
         value=access_token,
@@ -52,7 +74,7 @@ class LoginView(APIView):
         response.set_cookie(
         key="user_role",
         value=user.role,
-        httponly=False,  # Set to False so the Next.js middleware can read it easily
+        httponly=False,
         secure=settings.ACCESS_TOKEN_COOKIE_SECURE,
         samesite=settings.ACCESS_TOKEN_COOKIE_SAMESITE,
         max_age=settings.ACCESS_TOKEN_COOKIE_AGE
@@ -97,23 +119,58 @@ class MeView(APIView):
             "full_name": user.full_name,
            
         })
+    
+class Agents(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if request.user.role not in ['admin', 'superadmin']:
+            return Response(
+                {"detail": "Only admins can view agents."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        agents = User.objects.filter(
+            role='agent',
+            is_active=True
+        ).values(
+            'id',
+            'email',
+            'full_name',
+            'phone_number',
+            'date_joined',
+        )
+
+        return Response(list(agents), status=status.HTTP_200_OK)
+     
 
 class LogoutView(APIView):
     permission_classes = []
     
     def post(self, request):
-        response = Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
+        response = Response(
+            {"message": "Logged out successfully"}, 
+            status=status.HTTP_200_OK
+        )
         
         response.delete_cookie(
             key=settings.ACCESS_TOKEN_COOKIE_NAME,
+            path='/',
+            domain=None,
             samesite=settings.ACCESS_TOKEN_COOKIE_SAMESITE
         )
+        
         response.delete_cookie(
             key=settings.REFRESH_TOKEN_COOKIE_NAME,
+            path='/',
+            domain=None,
             samesite=settings.REFRESH_TOKEN_COOKIE_SAMESITE
         )
+        
         response.delete_cookie(
             key="user_role",
+            path='/',
+            domain=None,
             samesite=settings.ACCESS_TOKEN_COOKIE_SAMESITE
         )
         
