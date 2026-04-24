@@ -59,7 +59,8 @@ class LoginView(APIView):
         httponly=settings.ACCESS_TOKEN_COOKIE_HTTPONLY,
         secure=settings.ACCESS_TOKEN_COOKIE_SECURE,
         samesite=settings.ACCESS_TOKEN_COOKIE_SAMESITE,
-        max_age=settings.ACCESS_TOKEN_COOKIE_AGE
+        max_age=settings.ACCESS_TOKEN_COOKIE_AGE,
+        domain=settings.ACCESS_TOKEN_COOKIE_DOMAIN
         )
 
 
@@ -69,7 +70,8 @@ class LoginView(APIView):
         httponly=settings.REFRESH_TOKEN_COOKIE_HTTPONLY,
         secure=settings.REFRESH_TOKEN_COOKIE_SECURE,
         samesite=settings.REFRESH_TOKEN_COOKIE_SAMESITE,
-        max_age=settings.REFRESH_TOKEN_COOKIE_AGE
+        max_age=settings.REFRESH_TOKEN_COOKIE_AGE,
+        domain=settings.REFRESH_TOKEN_COOKIE_DOMAIN
         )
         response.set_cookie(
         key="user_role",
@@ -77,7 +79,8 @@ class LoginView(APIView):
         httponly=False,
         secure=settings.ACCESS_TOKEN_COOKIE_SECURE,
         samesite=settings.ACCESS_TOKEN_COOKIE_SAMESITE,
-        max_age=settings.ACCESS_TOKEN_COOKIE_AGE
+        max_age=settings.ACCESS_TOKEN_COOKIE_AGE,
+        domain=settings.ACCESS_TOKEN_COOKIE_DOMAIN
 )
 
         return response
@@ -103,7 +106,8 @@ class RefreshTokenView(APIView):
         httponly=settings.ACCESS_TOKEN_COOKIE_HTTPONLY,
         secure=settings.ACCESS_TOKEN_COOKIE_SECURE,
         samesite=settings.ACCESS_TOKEN_COOKIE_SAMESITE,
-        max_age=settings.ACCESS_TOKEN_COOKIE_AGE
+        max_age=settings.ACCESS_TOKEN_COOKIE_AGE,
+        domain=settings.ACCESS_TOKEN_COOKIE_DOMAIN
         )
         return response
 
